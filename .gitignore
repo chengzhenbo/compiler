@@ -1,0 +1,13 @@
+# Build output
+*.o
+*.out
+main # 或者你编译生成的可执行文件名
+
+# IDE/Editor specific files (examples)
+.vscode/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db

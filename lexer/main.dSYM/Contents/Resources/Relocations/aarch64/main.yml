@@ -1,0 +1,29 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     main
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _arena_create, symObjAddr: 0x0, symBinAddr: 0x100002568, symSize: 0xD0 }
+  - { offsetInCU: 0x4D, offset: 0x4D, size: 0x8, addend: 0x0, symName: _g_current_test_failed, symObjAddr: 0x3AA4, symBinAddr: 0x100008000, symSize: 0x0 }
+  - { offsetInCU: 0x69, offset: 0x69, size: 0x8, addend: 0x0, symName: _g_test_registry, symObjAddr: 0x3AB0, symBinAddr: 0x100008010, symSize: 0x0 }
+  - { offsetInCU: 0xCD, offset: 0xCD, size: 0x8, addend: 0x0, symName: _g_test_count, symObjAddr: 0x3AA8, symBinAddr: 0x100008008, symSize: 0x0 }
+  - { offsetInCU: 0xE2, offset: 0xE2, size: 0x8, addend: 0x0, symName: _g_total_failed, symObjAddr: 0x40F0, symBinAddr: 0x100008650, symSize: 0x0 }
+  - { offsetInCU: 0x1A0, offset: 0x1A0, size: 0x8, addend: 0x0, symName: _arena_create, symObjAddr: 0x0, symBinAddr: 0x100002568, symSize: 0xD0 }
+  - { offsetInCU: 0x1D6, offset: 0x1D6, size: 0x8, addend: 0x0, symName: _arena_alloc, symObjAddr: 0xD0, symBinAddr: 0x100002638, symSize: 0xF0 }
+  - { offsetInCU: 0x21A, offset: 0x21A, size: 0x8, addend: 0x0, symName: _arena_free, symObjAddr: 0x1C0, symBinAddr: 0x100002728, symSize: 0x48 }
+  - { offsetInCU: 0x23E, offset: 0x23E, size: 0x8, addend: 0x0, symName: _lexer_next_token, symObjAddr: 0x208, symBinAddr: 0x100002770, symSize: 0x1CC }
+  - { offsetInCU: 0x290, offset: 0x290, size: 0x8, addend: 0x0, symName: _register_test, symObjAddr: 0x3D4, symBinAddr: 0x10000293C, symSize: 0x94 }
+  - { offsetInCU: 0x2C2, offset: 0x2C2, size: 0x8, addend: 0x0, symName: __test_fail, symObjAddr: 0x468, symBinAddr: 0x1000029D0, symSize: 0xB0 }
+  - { offsetInCU: 0x310, offset: 0x310, size: 0x8, addend: 0x0, symName: _run_all_tests, symObjAddr: 0x518, symBinAddr: 0x100002A80, symSize: 0x1C8 }
+  - { offsetInCU: 0x354, offset: 0x354, size: 0x8, addend: 0x0, symName: _register_arena_tests, symObjAddr: 0x6E0, symBinAddr: 0x100002C48, symSize: 0x60 }
+  - { offsetInCU: 0x369, offset: 0x369, size: 0x8, addend: 0x0, symName: _test_arena_creation, symObjAddr: 0x740, symBinAddr: 0x100002CA8, symSize: 0x7C }
+  - { offsetInCU: 0x38D, offset: 0x38D, size: 0x8, addend: 0x0, symName: _test_arena_allocation, symObjAddr: 0x7BC, symBinAddr: 0x100002D24, symSize: 0x18C }
+  - { offsetInCU: 0x3CD, offset: 0x3CD, size: 0x8, addend: 0x0, symName: _test_arena_oom, symObjAddr: 0x948, symBinAddr: 0x100002EB0, symSize: 0x13C }
+  - { offsetInCU: 0x40D, offset: 0x40D, size: 0x8, addend: 0x0, symName: _test_arena_null_handling, symObjAddr: 0xA84, symBinAddr: 0x100002FEC, symSize: 0x70 }
+  - { offsetInCU: 0x422, offset: 0x422, size: 0x8, addend: 0x0, symName: _register_lexer_tests, symObjAddr: 0xAF4, symBinAddr: 0x10000305C, symSize: 0x60 }
+  - { offsetInCU: 0x437, offset: 0x437, size: 0x8, addend: 0x0, symName: _test_lexer_empty, symObjAddr: 0xB54, symBinAddr: 0x1000030BC, symSize: 0x188 }
+  - { offsetInCU: 0x4AF, offset: 0x4AF, size: 0x8, addend: 0x0, symName: _test_lexer_simple_chars, symObjAddr: 0xCDC, symBinAddr: 0x100003244, symSize: 0x1CC }
+  - { offsetInCU: 0x529, offset: 0x529, size: 0x8, addend: 0x0, symName: _test_lexer_star_and_space, symObjAddr: 0xEA8, symBinAddr: 0x100003410, symSize: 0x1CC }
+  - { offsetInCU: 0x5A3, offset: 0x5A3, size: 0x8, addend: 0x0, symName: _test_lexer_invalid_char, symObjAddr: 0x1074, symBinAddr: 0x1000035DC, symSize: 0x1CC }
+  - { offsetInCU: 0x61D, offset: 0x61D, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1240, symBinAddr: 0x1000037A8, symSize: 0x94 }
+  - { offsetInCU: 0x645, offset: 0x645, size: 0x8, addend: 0x0, symName: _expect_token, symObjAddr: 0x12D4, symBinAddr: 0x10000383C, symSize: 0x354 }
+...
