@@ -1,37 +1,41 @@
-// main.c
+// tmain.c
 #define UNITY_BUILD // 启用 Unity Build
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> // For exit, EXIT_FAILURE
 
-#include "src/arena.h"
+// --- Include ALL necessary .h and .c files ---
+
+// Arena
+#include "src/arena.h"      // Assuming path structure
 #include "src/arena.c"
 
-#include "src/lexer.h"
+// NFA (Fragment Version)
+#include "src/nfa.h"
+#include "src/nfa.c"
+
+// Lexer
+#include "src/lexer.h"      // Make sure lexer.h defines Token struct and types
 #include "src/lexer.c"
 
-// --- Test Framework & Tests ---
-// Include the framework's implementation
-#include "test/tiny_test_framework.h" // Include framework header first
-#include "test/tiny_test_framework.c" // Include framework implementation
-#include "test/test_arena.c"
-#include "test/test_lexer.c"
+#include "src/matcher.h"      // Make sure lexer.h defines Token struct and types
+#include "src/matcher.c"
+
+#include "src/parser.h"      // Make sure lexer.h defines Token struct and types
+#include "src/parser.c"
 
 int main() {
-    printf("Registering tests...\n");
-    register_arena_tests();
-    register_lexer_tests();
-    printf("Test registration complete.\n\n");
+    struct Arena* arena = arena_create(1024 * 10);
 
-    int failures = run_all_tests();
+    const char* regex = "aab*a";
+    const char* input = "abba";
 
-    if (failures == 0) {
-        printf("\nApplication can proceed safely.\n");
-        // ... your normal application code ...
-    } else {
-         printf("\nTests failed, application might be unstable.\n");
-    }
+    State* start = parse_regex(regex, arena);
+    int match = simulate_nfa(start, input, arena);
 
-    // Return non-zero if tests failed, often useful for CI/build scripts
-    return failures > 0 ? 1 : 0;
+    printf("Regex: \"%s\"\nInput: \"%s\"\nMatch: %s\n",
+        regex, input, match ? "YES" : "NO");
+
+    arena_free(arena);
+    return 0;
 }
