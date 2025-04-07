@@ -12,10 +12,10 @@
 
 // --- Test Framework & Tests ---
 // Include the framework's implementation
-#include "test/tiny_test_framework.h" // Include framework header first
-#include "test/tiny_test_framework.c" // Include framework implementation
-#include "test/test_arena.c"
-#include "test/test_lexer.c"
+#include "tiny_test_framework.h" // Include framework header first
+#include "tiny_test_framework.c" // Include framework implementation
+#include "test_arena.c"
+#include "test_lexer.c"
 
 int main() {
     printf("Registering tests...\n");

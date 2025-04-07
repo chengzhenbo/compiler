@@ -13,10 +13,10 @@ struct Transition {
     Transition* next;
 };
 
-struct State {
+typedef struct State {
     int is_accepting;
     Transition* transitions;
-};
+} State;
 
 typedef struct {
     State* start;

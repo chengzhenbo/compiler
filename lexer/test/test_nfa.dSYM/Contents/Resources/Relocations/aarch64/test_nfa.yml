@@ -1,0 +1,17 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/chengzhenbo/Documents/c_programing/compiler/lexer/test/test_nfa'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _create_state, symObjAddr: 0x0, symBinAddr: 0x1000035E0, symSize: 0x40 }
+  - { offsetInCU: 0x11B, offset: 0x11B, size: 0x8, addend: 0x0, symName: _create_state, symObjAddr: 0x0, symBinAddr: 0x1000035E0, symSize: 0x40 }
+  - { offsetInCU: 0x151, offset: 0x151, size: 0x8, addend: 0x0, symName: _arena_alloc, symObjAddr: 0x40, symBinAddr: 0x100003620, symSize: 0xF0 }
+  - { offsetInCU: 0x195, offset: 0x195, size: 0x8, addend: 0x0, symName: _add_transition, symObjAddr: 0x130, symBinAddr: 0x100003710, symSize: 0x6C }
+  - { offsetInCU: 0x1F1, offset: 0x1F1, size: 0x8, addend: 0x0, symName: _create_char_nfa, symObjAddr: 0x19C, symBinAddr: 0x10000377C, symSize: 0x70 }
+  - { offsetInCU: 0x243, offset: 0x243, size: 0x8, addend: 0x0, symName: _create_concat_nfa, symObjAddr: 0x20C, symBinAddr: 0x1000037EC, symSize: 0x60 }
+  - { offsetInCU: 0x287, offset: 0x287, size: 0x8, addend: 0x0, symName: _create_star_nfa, symObjAddr: 0x26C, symBinAddr: 0x10000384C, symSize: 0xBC }
+  - { offsetInCU: 0x2D9, offset: 0x2D9, size: 0x8, addend: 0x0, symName: _arena_create, symObjAddr: 0x328, symBinAddr: 0x100003908, symSize: 0xD0 }
+  - { offsetInCU: 0x30F, offset: 0x30F, size: 0x8, addend: 0x0, symName: _arena_free, symObjAddr: 0x3F8, symBinAddr: 0x1000039D8, symSize: 0x48 }
+  - { offsetInCU: 0x333, offset: 0x333, size: 0x8, addend: 0x0, symName: _get_state_id, symObjAddr: 0x440, symBinAddr: 0x100003A20, symSize: 0xD0 }
+  - { offsetInCU: 0x393, offset: 0x393, size: 0x8, addend: 0x0, symName: _print_state, symObjAddr: 0x510, symBinAddr: 0x100003AF0, symSize: 0x1DC }
+  - { offsetInCU: 0x451, offset: 0x451, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x6EC, symBinAddr: 0x100003CCC, symSize: 0x1D0 }
+...
