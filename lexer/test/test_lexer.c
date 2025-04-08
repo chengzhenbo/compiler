@@ -10,7 +10,7 @@
 int main(){
     struct Arena* arena = arena_create(64);
     Token* token;
-    const char regexp_1[] = "   aa*b&";
+    const char regexp_1[] = " we*a  ";
     const char* ptr_1 = regexp_1;  // 创建一个指针
     while ((token = lexer_next_token(&ptr_1, arena))->type != T_EOF)
     {
@@ -29,6 +29,6 @@ int main(){
                 break;
         }
     }
-
+    arena_free(arena);
     return 0;
 }
