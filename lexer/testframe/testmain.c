@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/arena.h"
-#include "src/arena.c"
+#include "../src/arena.h"
+#include "../src/arena.c"
 
-#include "src/lexer.h"
-#include "src/lexer.c"
+#include "../src/lexer.h"
+#include "../src/lexer.c"
 
 // --- Test Framework & Tests ---
 // Include the framework's implementation

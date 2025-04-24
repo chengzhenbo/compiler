@@ -27,7 +27,7 @@
 int main() {
     struct Arena* arena = arena_create(1024 * 10);
 
-    const char* regex = "aab*a";
+    const char* regex = "ab*a";//[aba, aa, abba, ....]
     const char* input = "abba";
 
     State* start = parse_regex(regex, arena);

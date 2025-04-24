@@ -21,6 +21,7 @@ Token* lexer_next_token(const char** regex,
     char c = **regex;
     if (c == '\0') {
         token->type = T_EOF;
+        token->value = c;
         return token;
     }else if (isalnum(c)) {
         token->type = T_CHAR;
