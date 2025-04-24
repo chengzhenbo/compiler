@@ -73,31 +73,38 @@ Grammar* read_grammar(const char* filename, struct Arena* arena);
 #endif // GRAMMAR_H
 
 // grammar.c
-#include "grammar.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>   // isspace
+#include <stdbool.h>
 
-static bool is_terminal(char c) {
-    return !(c >= 'A' && c <= 'Z') && c != 'ε';
-}
+#include "grammar.h" // 假设 grammar.h 包含结构体定义
+#include "arena.h"
 
-static bool is_nonterminal(char c) {
+bool is_nonterminal(char c) {
     return (c >= 'A' && c <= 'Z');
 }
 
-static void add_unique(char* arr, int* count, char c) {
-    for (int i = 0; i < *count; i++) {
-        if (arr[i] == c) return;
+void add_unique(char* list, int* count, char c) {
+    for (int i = 0; i < *count; ++i) {
+        if (list[i] == c) return;
     }
-    arr[(*count)++] = c;
+    list[(*count)++] = c;
 }
 
 Grammar* read_grammar(const char* filename, struct Arena* arena) {
     FILE* file = fopen(filename, "r");
-    if (!file) return NULL;
+    if (!file) {
+        fprintf(stderr, "Error: Cannot open grammar file: %s\n", filename);
+        return NULL;
+    }
 
     Grammar* grammar = arena_alloc(arena, sizeof(Grammar));
+    if (!grammar) {
+        fclose(file);
+        return NULL;
+    }
+
     grammar->rules = arena_alloc(arena, MAX_RULES * sizeof(Rule));
     grammar->rule_count = 0;
     grammar->nonterminal_count = 0;
@@ -105,30 +112,43 @@ Grammar* read_grammar(const char* filename, struct Arena* arena) {
 
     char line[256];
     while (fgets(line, sizeof(line), file)) {
+        // 忽略空行或注释
+        if (line[0] == '\n' || line[0] == '#') continue;
+
         char* arrow = strstr(line, "->");
-        if (!arrow) continue;
+        if (!arrow || arrow == line) continue;
 
         *arrow = '\0';
         char lhs = line[0];
         char* rhs = arrow + 2;
 
+        add_unique(grammar->nonterminals, &grammar->nonterminal_count, lhs);
+
         char* token = strtok(rhs, "|\n");
         while (token) {
+            // 去除开头空格
+            while (isspace(*token)) token++;
+
             Rule* rule = &grammar->rules[grammar->rule_count++];
             rule->lhs = lhs;
             rule->rhs = arena_alloc(arena, strlen(token) + 1);
             strcpy(rule->rhs, token);
-            
-            add_unique(grammar->nonterminals, &grammar->nonterminal_count, lhs);
-            for (char* p = token; *p; p++) {
-                if (*p == ' ' || *p == '\n') continue;
-                if (*p == 'ε') add_unique(grammar->terminals, &grammar->terminal_count, 'ε');
-                else if (is_nonterminal(*p)) add_unique(grammar->nonterminals, &grammar->nonterminal_count, *p);
-                else add_unique(grammar->terminals, &grammar->terminal_count, *p);
+
+            for (char* p = token; *p; ++p) {
+                if (isspace(*p)) continue;
+                if (*p == 'ε') {
+                    add_unique(grammar->terminals, &grammar->terminal_count, 'ε');
+                } else if (is_nonterminal(*p)) {
+                    add_unique(grammar->nonterminals, &grammar->nonterminal_count, *p);
+                } else {
+                    add_unique(grammar->terminals, &grammar->terminal_count, *p);
+                }
             }
+
             token = strtok(NULL, "|\n");
         }
     }
+
     fclose(file);
     return grammar;
 }

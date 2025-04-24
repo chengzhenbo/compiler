@@ -3,6 +3,9 @@
 
 #include "arena.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 #define MAX_SYMBOLS 64
 #define MAX_RULES 128

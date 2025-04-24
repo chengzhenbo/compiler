@@ -17,14 +17,16 @@ int main(){
     Grammar* grammar = read_grammar(filename, arena);
 
     for(int i = 0; i < grammar->nondermials_count; i++){
-        printf("%c\n", grammar->nonderminals[i]);
+        printf("nondermials[%d], %c\n", i, grammar->nonderminals[i]);
+    }
+    for(int i = 0; i < grammar->dermials_count; i++){
+        printf("dermials[%d], %c\n", i, grammar->derminals[i]);
+    }
+
+    for (int i = 0; i < grammar->rule_count; i++) {
+        printf("rule[%d]: %c -> %s\n", i, grammar->rules[i].left_hs, grammar->rules[i].right_hs);
     }
     
-    printf("=== Grammar Rules ===\n");
-    for(int i = 0; i < grammar->rule_count; i++){
-        Rule* r = &grammar->rules[i];
-        printf("%c -> %s\n", r->left_hs, r->right_hs);
-    }
 
     arena_free(arena);
     return 0;

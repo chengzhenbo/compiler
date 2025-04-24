@@ -1,0 +1,5 @@
+
+S->AaB|b|cK
+A->#|a
+B->b
+B->a
