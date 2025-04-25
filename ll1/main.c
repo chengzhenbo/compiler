@@ -16,11 +16,11 @@ int main(){
 
     Grammar* grammar = read_grammar(filename, arena);
 
-    for(int i = 0; i < grammar->nondermials_count; i++){
-        printf("nondermials[%d], %c\n", i, grammar->nonderminals[i]);
+    for(int i = 0; i < grammar->nontermials_count; i++){
+        printf("nondermials[%d], %c\n", i, grammar->nonterminals[i]);
     }
-    for(int i = 0; i < grammar->dermials_count; i++){
-        printf("dermials[%d], %c\n", i, grammar->derminals[i]);
+    for(int i = 0; i < grammar->termials_count; i++){
+        printf("dermials[%d], %c\n", i, grammar->terminals[i]);
     }
 
     for (int i = 0; i < grammar->rule_count; i++) {

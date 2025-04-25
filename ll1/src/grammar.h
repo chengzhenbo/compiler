@@ -20,10 +20,10 @@ typedef struct Grammar
 {
     Rule* rules;
     int rule_count;
-    char nonderminals[MAX_SYMBOLS];
-    int nondermials_count;
-    char derminals[MAX_SYMBOLS];
-    int dermials_count;
+    char nonterminals[MAX_SYMBOLS];
+    int nontermials_count;
+    char terminals[MAX_SYMBOLS];
+    int termials_count;
 } Grammar;
 
 Grammar* read_grammar(const char* filename, Arena* arena);
