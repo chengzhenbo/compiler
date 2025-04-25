@@ -2,7 +2,7 @@
 #define GRAMMAR_H
 
 #include "arena.h"
-#include <stdbool.h>
+#include "grammar_utils.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

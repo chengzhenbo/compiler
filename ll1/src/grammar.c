@@ -1,6 +1,6 @@
 #include "grammar.h"
 
-void add_unique_nonterminals(char* list, int* count, char c)
+static void add_unique_nonterminals(char* list, int* count, char c)
 {
     //过滤重复的字符
     for(int i = 0; i < *count; i++){
@@ -15,9 +15,9 @@ void collect_symbols_from_rhs(char* rhs, Grammar* grammar) {
         if (isspace(*p)) continue;
         if (*p == '#') { //#表示空串
             add_unique_nonterminals(grammar->terminals, &grammar->termials_count, '#');
-        } else if (isupper(*p)) {
+        } else if (is_nonterminal(*p)) {
             add_unique_nonterminals(grammar->nonterminals, &grammar->nontermials_count, *p);
-        } else {
+        } else if (is_terminal(*p)) {
             add_unique_nonterminals(grammar->terminals, &grammar->termials_count, *p);
         }
     }
