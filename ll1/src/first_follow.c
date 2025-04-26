@@ -29,3 +29,11 @@ bool add_char(char* set, char c){
     set[len+1] = '\0';
     return true;
 }
+
+bool is_terminal(char c){
+    return islower(c) || !isalpha(c);
+}
+
+bool is_nonterminal(char c){
+    return isupper(c);
+}

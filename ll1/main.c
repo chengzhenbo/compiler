@@ -7,14 +7,11 @@
 #include "src/arena.h"      
 #include "src/arena.c"
 
-#include "src/grammar_utils.h"
-#include "src/grammar_utils.c"
+#include "src/first_follow.h"
+#include "src/first_follow.c"
 
 #include "src/grammar.h"
 #include "src/grammar.c"
-
-#include "src/first_follow.h"
-#include "src/first_follow.c"
 
 #include "src/first_set.h"
 #include "src/first_set.c"

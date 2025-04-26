@@ -2,7 +2,8 @@
 #define GRAMMAR_H
 
 #include "arena.h"
-#include "grammar_utils.h"
+#include "first_follow.h"
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

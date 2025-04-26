@@ -1,2 +1,5 @@
 实现了给定文法求解First集和Follow集。
+1.解析输入文法的产生式
+2.求解First集
+3.求解Follow集
 
