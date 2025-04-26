@@ -3,12 +3,7 @@
 
 #include "arena.h"
 #include "grammar.h"
-
-typedef struct SymbolSet{
-    char symbol;
-    char* first;
-    char* follow;
-} SymbolSet;
+#include "first_follow.h"
 
 void compute_first_sets(Grammar* grammar, SymbolSet* sets, int* set_count, Arena* arena);
 
