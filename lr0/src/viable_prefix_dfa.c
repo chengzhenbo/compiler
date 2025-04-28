@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 // 打印 DFA
 void print_dfa(const DFA* dfa) {
@@ -39,8 +40,8 @@ static int item_equal(const DFAItem* a, const DFAItem* b) {
 }
 
 // 判断两个 ItemSet 是否相等
-static int itemset_equal(const ItemSet* a, const ItemSet* b) {
-    if (a->item_count != b->item_count) return 0;
+static bool itemset_equal(const ItemSet* a, const ItemSet* b) {
+    if (a->item_count != b->item_count) return false;
     for (uint8_t i = 0; i < a->item_count; i++) {
         int found = 0;
         for (uint8_t j = 0; j < b->item_count; j++) {
@@ -49,9 +50,9 @@ static int itemset_equal(const ItemSet* a, const ItemSet* b) {
                 break;
             }
         }
-        if (!found) return 0;
+        if (!found) return false;
     }
-    return 1;
+    return true;
 }
 
 // 查找 DFA 中是否已存在某个项集
