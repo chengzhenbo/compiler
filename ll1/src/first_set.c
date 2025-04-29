@@ -38,7 +38,8 @@ static void process_right_symbol_first(char* rhs,
 void compute_first_sets(Grammar* grammar, 
                         SymbolSet* sets, 
                         int* set_count, 
-                        Arena* arena){
+                        Arena* arena)
+{
     bool changed;
     do{
         changed = false;

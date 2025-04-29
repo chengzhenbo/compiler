@@ -1,9 +1,13 @@
 #include "first_follow.h"
 
+#include <ctype.h>
+#include <string.h>
+
 SymbolSet* get_or_create_set(SymbolSet* sets, 
-                                    int* count, 
-                                    char symbol, 
-                                    Arena* arena){
+                             int* count, 
+                             char symbol, 
+                             Arena* arena)
+{
     // symbol对应的表如果存在就返回这个表
     for(int i = 0; i < *count; i++){
         if(sets[i].symbol == symbol) return &sets[i];

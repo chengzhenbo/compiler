@@ -25,11 +25,11 @@ int main(){
 
     Grammar* grammar = read_grammar(filename, arena);
     printf("---文法的非终结符---\n");
-    for(int i = 0; i < grammar->nontermials_count; i++){
+    for(int i = 0; i < grammar->nonterminals_count; i++){
         printf("Nondermials[%d], %c\n", i, grammar->nonterminals[i]);
     }
     printf("---文法的终结符---\n");
-    for(int i = 0; i < grammar->termials_count; i++){
+    for(int i = 0; i < grammar->terminals_count; i++){
         printf("Dermials[%d], %c\n", i, grammar->terminals[i]);
     }
     printf("---文法的产生式---\n");
@@ -38,6 +38,10 @@ int main(){
     }
 
     SymbolSet* sets = arena_alloc(arena, MAX_SYMBOLS * sizeof(SymbolSet));
+    if(!sets){
+        fprintf(stderr, "Error: Failed to allocate memory for sets of symbolset.\n");
+        return 1; 
+    }
     int set_count = 0;
     printf("---非终结符的First集---\n");
     compute_first_sets(grammar, sets, &set_count, arena);
