@@ -27,11 +27,11 @@ int main(){
     Grammar* grammar = read_grammar(filename, grammar_arena);
     
     printf("---文法的非终结符---\n");
-    for(int i = 0; i < grammar->nontermials_count; i++){
+    for(int i = 0; i < grammar->nonterminals_count; i++){
         printf("Nondermials[%d], %c\n", i, grammar->nonterminals[i]);
     }
     printf("---文法的终结符---\n");
-    for(int i = 0; i < grammar->termials_count; i++){
+    for(int i = 0; i < grammar->terminals_count; i++){
         printf("Dermials[%d], %c\n", i, grammar->terminals[i]);
     }
     printf("---文法的产生式---\n");

@@ -15,16 +15,17 @@ typedef struct Rule
 {
     char left_hs;   //产生式左边的非终结符
     char* right_hs; //产生式右边的串，包括终结符与非终结符
+    uint8_t right_hs_count;
 } Rule;
 
 typedef struct Grammar
 {
     Rule* rules;
-    int rule_count;
+    uint8_t rule_count;
     char nonterminals[MAX_SYMBOLS];
-    int nontermials_count;
+    uint8_t nonterminals_count;
     char terminals[MAX_SYMBOLS];
-    int termials_count;
+    uint8_t terminals_count;
 } Grammar;
 
 Grammar* read_grammar(const char* filename, Arena* arena);

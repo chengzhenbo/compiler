@@ -1,7 +1,5 @@
-S -> E
-E -> E+T
+S->E
 E -> T
-T -> T*F
-T -> F
-F -> (E)
-F -> i
+E -> E+T
+T -> i
+T -> (E)
