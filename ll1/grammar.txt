@@ -1,4 +1,4 @@
-A->BDa|#
+ A ->BD a|#
 D->#|dA
 B->b
 
