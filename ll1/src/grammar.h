@@ -10,6 +10,17 @@
 #define GRAMMAR_MAX_RULES 128
 #define GRAMMAR_MAX_LINE_LEN 256
 
+// ==== 错误码 ====
+typedef enum {
+    GRAMMAR_OK = 0,
+    GRAMMAR_ERROR_INVALID_ARGUMENT,
+    GRAMMAR_ERROR_INVALID_FORMAT,
+    GRAMMAR_ERROR_INVALID_NONTERMINAL,
+    GRAMMAR_ERROR_ALLOCATION_FAILED,
+    GRAMMAR_ERROR_TOO_MANY_RULES,
+    GRAMMAR_ERROR_TOO_MANY_SYMBOLS
+} GrammarStatus;
+
 typedef struct Rule
 {
     char left_hs;   //产生式左边的非终结符

@@ -1,5 +1,5 @@
- A ->BD a|#
-D->#|dA
+ A B->D B|#
+D->#|dA|d
 B->b
 
  

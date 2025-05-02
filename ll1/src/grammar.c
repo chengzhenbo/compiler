@@ -4,6 +4,17 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdarg.h>  // 用于可变参数处理
+
+/// 打印统一格式的错误信息
+static void grammar_report_error(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    fprintf(stderr, "[Grammar Error] ");
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "\n");
+    va_end(args);
+}
 
 /// 判断是否为终结符：小写字母或非字母字符
 bool grammar_is_terminal(char c) {
@@ -21,27 +32,22 @@ static void grammar_add_unique_symbol(char* list, uint8_t* count, char c) {
         if (list[i] == c) return; // 已存在
     }
     if (*count >= GRAMMAR_MAX_SYMBOLS) {
-        fprintf(stderr, "Error: Exceeded maximum number of symbols (%d).\n", GRAMMAR_MAX_SYMBOLS);
+        grammar_report_error("Exceeded maximum number of symbols (%d).", GRAMMAR_MAX_SYMBOLS);
         exit(EXIT_FAILURE); 
     }
     list[(*count)++] = c; // 添加新符号
-}
-
-/// 检查左部是否合法（必须是单个非终结符）
-static bool grammar_is_valid_lhs(const char* lhs) {
-    return lhs && grammar_is_nonterminal(lhs[0]);
 }
 
 /// 初始化 Grammar 结构体，包括规则数组的分配
 static Grammar* init_grammar(Arena* arena) {
     Grammar* grammar = arena_alloc(arena, sizeof(Grammar));
     if (!grammar) {
-        fprintf(stderr,"Failed to allocate memory for Grammar struct.");
+        grammar_report_error("Failed to allocate memory for Grammar struct.");
         return NULL;
     }
     Rule* rules = arena_alloc(arena, GRAMMAR_MAX_RULES * sizeof(Rule));
     if (!rules) {
-        fprintf(stderr,"Failed to allocate memory for rule struct.");
+        grammar_report_error("Failed to allocate memory for rule struct.");
         return NULL;
     }
     grammar->rules = rules;
@@ -84,7 +90,7 @@ static bool grammar_parse_rhs(Grammar* grammar, char l_hs, char* r_hs, Arena* ar
         while (isspace(*token)) token++; // 跳过前导空白
 
         if (grammar->rule_count >= GRAMMAR_MAX_RULES) {
-            fprintf(stderr, "Error: Exceeded maximum number of rules (%d).\n", GRAMMAR_MAX_RULES);
+            grammar_report_error("Exceeded maximum number of rules (%d).", GRAMMAR_MAX_RULES);
             return false;
         }
 
@@ -96,7 +102,7 @@ static bool grammar_parse_rhs(Grammar* grammar, char l_hs, char* r_hs, Arena* ar
         rule->right_hs_count = (size_t)(token_len + 1); 
         rule->right_hs = arena_alloc(arena, rule->right_hs_count);
         if (!rule->right_hs) {
-            fprintf(stderr, "Error: Failed to allocate memory for Grammar rules.\n");
+            grammar_report_error("Failed to allocate memory for Grammar rules.");
             return false;
         }
 
@@ -111,14 +117,46 @@ static bool grammar_parse_rhs(Grammar* grammar, char l_hs, char* r_hs, Arena* ar
     return true; 
 }
 
-/// 从一行中提取产生式左部符号和右部字符串
-static bool grammar_extract_lhs_rhs(char* line, char* lhs, char** rhs) {
-    char* arrow = strstr(line, "->");
-    if (!arrow || arrow == line) return false;
+/// 提取 LHS 非终结符（必须是箭头左侧的第一个非空字符）
+static GrammarStatus grammar_extract_lhs(const char* line, char* lhs) {
+    if (!line || !lhs) return GRAMMAR_ERROR_INVALID_ARGUMENT;
 
-    *lhs = line[0];
-    *rhs = arrow + 2; // 指向右部起始位置
-    return true;
+    const char* arrow = strstr(line, "->");
+    if (!arrow || arrow == line) {
+        return GRAMMAR_ERROR_INVALID_FORMAT;
+    }
+    // 提取 -> 左边的部分
+    size_t lhs_len = arrow - line;
+    if (lhs_len != 1) {
+        return GRAMMAR_ERROR_INVALID_FORMAT; // LHS 必须是单个字符
+    }
+    char candidate = line[0];
+    if (!grammar_is_nonterminal(candidate)) {
+        return GRAMMAR_ERROR_INVALID_NONTERMINAL;
+    }
+
+    *lhs = candidate;
+    return GRAMMAR_OK;
+}
+
+// 提取 RHS：即 "->" 之后的部分（去除前导空格），返回状态码
+static GrammarStatus grammar_extract_rhs(const char* line, char** rhs_out) {
+    if (!line || !rhs_out) return GRAMMAR_ERROR_INVALID_ARGUMENT;
+
+    const char* arrow = strstr(line, "->");
+    if (!arrow) return GRAMMAR_ERROR_INVALID_FORMAT;
+
+    arrow += 2; // 跳过 "->"
+
+    // 跳过空白字符
+    while (isspace((unsigned char)*arrow)) {
+        arrow++;
+    }
+
+    if (*arrow == '\0') return GRAMMAR_ERROR_INVALID_FORMAT;
+
+    *rhs_out = (char*)arrow;
+    return GRAMMAR_OK;
 }
 
 /// 处理文法文件中的一行，解析为规则并添加进文法
@@ -127,16 +165,17 @@ static bool grammar_process_line(char* line, Grammar* grammar, Arena* arena) {
     if (line[0] == '\0') return true;  // 空行跳过
 
     char lhs;
-    char* rhs;
-
-    if (!grammar_extract_lhs_rhs(line, &lhs, &rhs)) {
-        fprintf(stderr, "Error: Invalid grammar line format: %s\n", line);
-        return false;
+    GrammarStatus status = grammar_extract_lhs(line, &lhs);
+    if (status != GRAMMAR_OK) {
+        grammar_report_error("Invalid LHS in line: %s", line);
+        return status;
     }
 
-    if (!grammar_is_valid_lhs(&lhs)) {
-        fprintf(stderr, "Error: Invalid LHS nonterminal: %c\n", lhs);
-        return false;
+    char* rhs = NULL;
+    status = grammar_extract_rhs(line, &rhs);
+    if (status != GRAMMAR_OK) {
+        grammar_report_error("Invalid RHS in line: %s", line);
+        return status;
     }
 
     grammar_add_unique_symbol(grammar->nonterminals, &grammar->nonterminals_count, lhs);
@@ -151,7 +190,7 @@ Grammar* read_grammar(const char* filename, Arena* arena) {
 
     FILE* file = fopen(filename, "r");
     if (!file) {
-        fprintf(stderr, "Error: Failed to open the file.\n");
+        grammar_report_error("Failed to open the file.");
         return NULL;
     }
 
@@ -167,6 +206,7 @@ Grammar* read_grammar(const char* filename, Arena* arena) {
     fclose(file);
     return grammar;
 }
+
 void print_grammar(const Grammar* grammar) {
     printf("=== Grammar ===\n");
 
