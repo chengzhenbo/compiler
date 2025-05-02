@@ -1,4 +1,5 @@
 #include "first_follow.h"
+#include "grammar.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -15,8 +16,8 @@ SymbolSet* get_or_create_set(SymbolSet* sets,
     // symbol对应的表不存在，则创建新表
     SymbolSet* set = &sets[(*count)++];
     set->symbol = symbol;
-    set->first = arena_alloc(arena, MAX_SYMBOLS);
-    set->follow = arena_alloc(arena, MAX_SYMBOLS);
+    set->first = arena_alloc(arena, GRAMMAR_MAX_SYMBOLS);
+    set->follow = arena_alloc(arena, GRAMMAR_MAX_SYMBOLS);
     if(!set->first || !set->follow){
         fprintf(stderr, "Error: Failed to allocate memory for First or Follow.\n");
         return NULL; 
@@ -34,10 +35,3 @@ bool add_char(char* set, char c){
     return true;
 }
 
-bool is_terminal(char c){
-    return islower(c) || !isalpha(c);
-}
-
-bool is_nonterminal(char c){
-    return isupper(c);
-}

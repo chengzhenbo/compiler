@@ -13,7 +13,7 @@ static void process_right_symbol_first(char* rhs,
         char symbol = rhs[j];
         if(isspace(symbol)) continue;
 
-        if(is_terminal(symbol) || symbol == '#'){
+        if(grammar_is_terminal(symbol) || symbol == '#'){
             if(add_char(lhs_set->first, symbol)) *changed = true;
             epsilon_in_rhs = (symbol == '#');
             break;

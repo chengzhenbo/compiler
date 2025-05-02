@@ -2,12 +2,13 @@
 #define GRAMMAR_H
 
 #include "arena.h"
-#include "first_follow.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 
-#define MAX_SYMBOLS 64
-#define MAX_RULES 128
+#define GRAMMAR_MAX_SYMBOLS 64
+#define GRAMMAR_MAX_RULES 128
+#define GRAMMAR_MAX_LINE_LEN 256
 
 typedef struct Rule
 {
@@ -20,12 +21,15 @@ typedef struct Grammar
 {
     Rule* rules;
     uint8_t rule_count;
-    char nonterminals[MAX_SYMBOLS];
+    char nonterminals[GRAMMAR_MAX_SYMBOLS];
     uint8_t nonterminals_count;
-    char terminals[MAX_SYMBOLS];
+    char terminals[GRAMMAR_MAX_SYMBOLS];
     uint8_t terminals_count;
 } Grammar;
 
-Grammar* read_grammar(const char* filename, Arena* arena);
+bool grammar_is_terminal(char c);
+bool grammar_is_nonterminal(char c);
 
+Grammar* read_grammar(const char* filename, Arena* arena);
+void print_grammar(const Grammar* grammar);
 #endif

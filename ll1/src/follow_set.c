@@ -11,14 +11,14 @@ static void propagate_follow(Grammar* grammar,
 
         for(size_t j = 0; j < len_rule; j++){
             char B = rule->right_hs[j];
-            if(!is_nonterminal(B)) continue;
+            if(!grammar_is_nonterminal(B)) continue;
             SymbolSet* B_set = get_or_create_set(sets, set_count, B, arena);
 
             bool epsilon_chain = true; // epsilon 闭包运输
             for(size_t k = j+1; k < len_rule; k++){
                 char next_sym = rule->right_hs[k];
                 //非终结符B后紧跟着终结符，就将其加入到B的follow集
-                if(is_terminal(next_sym)){
+                if(grammar_is_terminal(next_sym)){
                     if(add_char(B_set->follow, next_sym)) *changed = true;
                     epsilon_chain = false;
                     break;
