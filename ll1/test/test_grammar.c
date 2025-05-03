@@ -34,7 +34,7 @@ TEST(test_is_terminal_nonterminal) {
     ASSERT(grammar_is_terminal('+'));
     ASSERT(!grammar_is_terminal('A'));
     ASSERT(grammar_is_nonterminal('S'));
-    ASSERT(!grammar_is_nonterminal('A'));
+    ASSERT(!grammar_is_nonterminal('a'));
 }
 
 TEST(test_add_unique_symbol) {
@@ -93,7 +93,7 @@ TEST(test_parse_rhs) {
     Grammar* g = init_grammar(arena);
     ASSERT(g != NULL);
     char rhs_buf[] = "aB|#"; 
-    ASSERT(grammar_parse_rhs(g, 'S', rhs_buf, arena));
+    ASSERT(grammar_parse_rhs(g, 'S', rhs_buf, arena)== GRAMMAR_OK);
     ASSERT(g->rule_count == 2);
     ASSERT(g->rules[0].left_hs == 'S');
     ASSERT_STR_EQ(g->rules[0].right_hs, "aB");
@@ -107,7 +107,7 @@ TEST(test_process_line) {
     Grammar* g = init_grammar(arena);
 
     char line[] = "S -> aB | b";
-    ASSERT(grammar_process_line(line, g, arena));
+    ASSERT(grammar_process_line(line, g, arena)==GRAMMAR_OK);
     ASSERT(g->rule_count == 2);
 
     arena_free(arena);
