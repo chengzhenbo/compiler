@@ -3,3 +3,5 @@
 2.求解First集
 3.求解Follow集
 
+测试：clang -std=c11 test_grammar.c -o test_grammar -Wall -Wextra -DDEBUG_GRAMMAR
+

@@ -3,6 +3,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "test_framework.h"
+
 #include "../src/arena.h"      
 #include "../src/arena.c"
 
@@ -10,22 +12,7 @@
 #include "../src/grammar.c"
 
 
-// Very small test helpers
-int failed = 0;
-#define TEST(name) void name()
-#define RUN_TEST(name) printf("\n\033[1m%s\n\033[0m", #name); name()
-#define ASSERT(expr) if (!(expr)) { \
-  failed = 1; \
-  printf("\033[0;31mFAIL: %s\n\033[0m", #expr); \
-} else { \
-  printf("\033[0;32mPASS: %s\n\033[0m", #expr); \
-}
-#define ASSERT_STR_EQ(str1, str2) if (!(strcmp(str1, str2) == 0)) { \
-  failed = 1; \
-  printf("\033[0;31mFAIL: %s != %s\n\033[0m", str1, str2); \
-} else { \
-  printf("\033[0;32mPASS: %s == %s\n\033[0m", str1, str2); \
-}
+
 
 
 // --- Test functions ---
@@ -41,10 +28,12 @@ TEST(test_add_unique_symbol) {
     char list[10];
     uint8_t count = 0;
 
-    grammar_add_unique_symbol(list, &count, 'a');
-    grammar_add_unique_symbol(list, &count, 'b');
-    grammar_add_unique_symbol(list, &count, 'a');  // duplicate
-
+    GrammarResultVoid rv_1 = grammar_add_unique_symbol(list, &count, 'a');
+    GrammarResultVoid rv_2 = grammar_add_unique_symbol(list, &count, 'b');
+    GrammarResultVoid rv_3 = grammar_add_unique_symbol(list, &count, 'a');  // duplicate
+    ASSERT(rv_1.status==GRAMMAR_OK);
+    ASSERT(rv_2.status==GRAMMAR_OK);
+    ASSERT(rv_3.status==GRAMMAR_OK);
     ASSERT(count == 2);
     ASSERT(list[0] == 'a');
     ASSERT(list[1] == 'b');
@@ -52,48 +41,63 @@ TEST(test_add_unique_symbol) {
 
 TEST(test_remove_spaces) {
     char input[] = "  A  ->  a B  ";
-    remove_spaces(input);
+    line_remove_spaces(input);
     ASSERT_STR_EQ(input, "A->aB");
 }
 
 TEST(test_extract_lhs) {
-    char lhs;
-    ASSERT(grammar_extract_lhs("S->aB", &lhs) == GRAMMAR_OK);
-    ASSERT(lhs == 'S');
+    GrammarResultChar res = grammar_extract_lhs("S->aB");
+    ASSERT(res.status == GRAMMAR_OK);
+    ASSERT(res.value == 'S');
 
-    ASSERT(grammar_extract_lhs("->aB", &lhs) == GRAMMAR_ERROR_INVALID_FORMAT);
-    ASSERT(grammar_extract_lhs("SS->aB", &lhs) == GRAMMAR_ERROR_INVALID_FORMAT);
-    ASSERT(grammar_extract_lhs("s->aB", &lhs) == GRAMMAR_ERROR_INVALID_NONTERMINAL);
+    res = grammar_extract_lhs("->aB");
+    ASSERT(res.status == GRAMMAR_ERROR_INVALID_FORMAT);
+
+    res = grammar_extract_lhs("SS->aB");
+    ASSERT(res.status == GRAMMAR_ERROR_INVALID_FORMAT);
+
+    res = grammar_extract_lhs("s->aB");
+    ASSERT(res.status == GRAMMAR_ERROR_INVALID_NONTERMINAL);
 }
 
 TEST(test_extract_rhs) {
-    char* rhs = NULL;
-    ASSERT(grammar_extract_rhs("S->aB", &rhs) == GRAMMAR_OK);
-    ASSERT_STR_EQ(rhs, "aB");
+    GrammarResultString res = grammar_extract_rhs("S->aB");
+    ASSERT(res.status == GRAMMAR_OK);
+    ASSERT_STR_EQ(res.value, "aB");
 
-    ASSERT(grammar_extract_rhs("S->   a|b", &rhs) == GRAMMAR_OK);
-    ASSERT_STR_EQ(rhs, "a|b");
+    res = grammar_extract_rhs("S->   a|b");
+    ASSERT(res.status == GRAMMAR_OK);
+    ASSERT_STR_EQ(res.value, "a|b");
 
-    ASSERT(grammar_extract_rhs("S->", &rhs) == GRAMMAR_ERROR_INVALID_FORMAT);
+    res = grammar_extract_rhs("S->");
+    ASSERT(res.status == GRAMMAR_ERROR_INVALID_FORMAT);
 }
 
 TEST(test_collect_rhs_symbols) {
-    Arena* arena = arena_create(1024*10);
-    Grammar* g = init_grammar(arena);
-    grammar_collect_rhs_symbols("aB#", g);
+    Arena* arena = arena_create(1024 * 10);
+    GrammarResultGrammar r = init_grammar(arena);
+    ASSERT(r.status == GRAMMAR_OK);
+    Grammar* g = r.value;
 
-    ASSERT(g->terminals_count == 2);  // a, #
+    GrammarResultVoid res = grammar_collect_rhs_symbols("aB#", g);
+    ASSERT(res.status == GRAMMAR_OK);
+
+    ASSERT(g->terminals_count == 2);     // a, #
     ASSERT(g->nonterminals_count == 1);  // B
 
     arena_free(arena);
 }
 
 TEST(test_parse_rhs) {
-    Arena* arena = arena_create(1024*1024);
-    Grammar* g = init_grammar(arena);
-    ASSERT(g != NULL);
-    char rhs_buf[] = "aB|#"; 
-    ASSERT(grammar_parse_rhs(g, 'S', rhs_buf, arena)== GRAMMAR_OK);
+    Arena* arena = arena_create(1024 * 1024);
+    GrammarResultGrammar r = init_grammar(arena);
+    ASSERT(r.status == GRAMMAR_OK);
+    Grammar* g = r.value;
+
+    char rhs_buf[] = "aB|#";
+    GrammarResultVoid res = grammar_parse_rhs(g, 'S', rhs_buf, arena);
+    ASSERT(res.status == GRAMMAR_OK);
+
     ASSERT(g->rule_count == 2);
     ASSERT(g->rules[0].left_hs == 'S');
     ASSERT_STR_EQ(g->rules[0].right_hs, "aB");
@@ -103,11 +107,14 @@ TEST(test_parse_rhs) {
 }
 
 TEST(test_process_line) {
-    Arena* arena = arena_create(1024*10);
-    Grammar* g = init_grammar(arena);
+    Arena* arena = arena_create(1024 * 10);
+    GrammarResultGrammar r = init_grammar(arena);
+    ASSERT(r.status == GRAMMAR_OK);
+    Grammar* g = r.value;
 
     char line[] = "S -> aB | b";
-    ASSERT(grammar_process_line(line, g, arena)==GRAMMAR_OK);
+    GrammarResultVoid res = grammar_process_line(line, g, arena);
+    ASSERT(res.status == GRAMMAR_OK);
     ASSERT(g->rule_count == 2);
 
     arena_free(arena);
@@ -118,8 +125,11 @@ TEST(test_read_grammar) {
     fprintf(f, "S -> aB\nB -> b\n");
     fclose(f);
 
-    Arena* arena = arena_create(1024*1024);
-    Grammar* g = read_grammar("temp_grammar.txt", arena);
+    Arena* arena = arena_create(1024 * 1024);
+    GrammarResultGrammar res = read_grammar("temp_grammar.txt", arena);
+    ASSERT(res.status == GRAMMAR_OK);
+    Grammar* g = res.value;
+
     ASSERT(g != NULL);
     ASSERT(g->rule_count == 2);
     ASSERT(g->rules[0].left_hs == 'S');

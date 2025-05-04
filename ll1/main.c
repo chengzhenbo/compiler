@@ -23,7 +23,14 @@ int main(){
     struct Arena* arena = arena_create(1024*10);
     char filename[] = "grammar.txt";
 
-    Grammar* grammar = read_grammar(filename, arena);
+    GrammarResultGrammar result =  read_grammar(filename, arena);
+    if (result.status != GRAMMAR_OK) {
+        fprintf(stderr, "Error: Failed to read grammar from file. Status code: %d\n", result.status);
+        arena_free(arena);
+        return 1;
+    }
+
+    Grammar* grammar = result.value;
     print_grammar(grammar);
 
     SymbolSet* sets = arena_alloc(arena, GRAMMAR_MAX_SYMBOLS * sizeof(SymbolSet));
